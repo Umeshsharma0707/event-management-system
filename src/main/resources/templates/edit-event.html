@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Event</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Include Header -->
+<div th:replace="fragments/user-header :: header"></div>
+<div class="container mt-5">
+    <h1>Add New Event</h1>
+
+
+<!-- Display error or success message -->
+        <div th:if="${error}" style="background: beige;color: red;" role="alert">
+            <p th:text="${error}"></p>
+        </div>
+                <div th:if="${message}" style="background: beige;color: red;" role="alert">
+            <p th:text="${message}"></p>
+        </div>
+
+
+
+    <form th:action="@{/events/{userId}/update/{eventId}(userId=${user.id}, eventId=${event.id})}" method="post" enctype="multipart/form-data">
+    
+    	 <input type="text" class="form-control" id="userId" name="eventId" th:value="${event.id}">
+    
+        <div class="form-group">
+            <label for="name">Event Name</label>
+            <input type="text" class="form-control" id="name" name="name" th:value="${event.name}" placeholder="Enter event name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="eventDate">Event Date</label>
+            <input type="date" class="form-control" id="eventDate" name="eventDate" th:value="${event.eventDate}"  required>
+        </div>
+
+        <div class="form-group">
+            <label for="eventTime">Event Time</label>
+            <input type="time" class="form-control" id="eventTime" name="eventTime" th:value="${event.eventTime}" required>
+        </div>
+	
+		<div class="form-group">
+            <label for="location">Event Description</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="Enter event location" required>
+        </div>
+	
+        <div class="form-group">
+            <label for="description">Event Description</label>
+            <textarea class="form-control" id="description" name="description" th:text="${event.description}" rows="3" placeholder="Enter event description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="poster">Event Poster</label>
+            <input type="file" class="form-control-file" id="poster" name="poster" required="required">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Event</button>
+    </form>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
