@@ -40,7 +40,7 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
 		http.csrf(csrf -> csrf.disable())
-		.authorizeHttpRequests(request -> request.requestMatchers("/","/index","/login","/register").permitAll().anyRequest().authenticated())
+		.authorizeHttpRequests(request -> request.requestMatchers("/","/index","/login","/register","/forgot-password","/forgotPassword","/otp-verification","/resendotp/{email}").permitAll().anyRequest().authenticated())
 		.formLogin(formlogin -> formlogin.loginPage("/login").defaultSuccessUrl("/userHome",true)
 				 .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error=true")))
 		.logout(logout -> logout.permitAll());

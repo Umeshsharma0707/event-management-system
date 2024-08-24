@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Event Registrations</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Include Header -->
+<div th:replace="fragments/user-header :: header"></div>
+
+<div class="container mt-5">
+    <h2>Event Registration Requests</h2>
+
+    <!-- Display error or success message -->
+    <div th:if="${message}" style="color: red;background: beige;border: medium;">
+        <p th:text="${message}"></p>
+    </div>
+
+<div th:if="${error}" style="color: red;background: beige;border: medium;">
+        <p th:text="${error}"></p>
+    </div>
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Serial No.</th>
+                <th scope="col">Event Name</th>
+                <th scope="col">Participant Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Confirm</th>
+                <th scope="col">Cancel</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="register, iterStat : ${registrations}">
+                <th scope="row" th:text="${iterStat.index + 1}"></th>
+                <td th:text="${register.event.name}"></td>
+                <td th:text="${register.user.name}"></td>
+                <td th:text="${register.status}"></td>
+                <td>
+                    <div class="d-flex justify-content-between">
+                        <form th:action="@{/events/{userId}/confirm-registration/{registerId}(userId=${user.id}, registerId=${register.id})}" method="post">
+                            
+                                
+                                <button type="submit" class="btn btn-primary" >Confirm</button>
+                            
+                        </form>
+                    </div>
+                </td>
+                <td>
+                    <form th:action="@{/events/{userId}/cancel-registration/{registerId}(userId=${user.id}, registerId=${register.id})}" method="post">
+                        <button type="submit" class="btn btn-danger">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

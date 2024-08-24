@@ -27,9 +27,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.event.model.Event;
+import com.event.model.Registration;
 import com.event.model.User;
 import com.event.repos.UserRepo;
 import com.event.service.EventService;
+import com.event.service.MailService;
+import com.event.service.RegistrationService;
 import com.event.service.UserPrincipals;
 import com.event.service.UserService;
 
@@ -45,6 +48,12 @@ public class EventController {
 	@Autowired
 	private EventService eventService;
 
+	@Autowired
+	private RegistrationService registrationService;
+	
+	@Autowired
+	private MailService mailService;
+	
 	@ModelAttribute
 	public void addUserAttribute(@AuthenticationPrincipal UserPrincipals userPrincipal, Model model) {
 		User user = userPrincipal.getFullUser();
@@ -176,8 +185,14 @@ public class EventController {
 			file.transferTo(filePath);
 
 			System.out.println("filepath : " + filePath);
+			System.out.println("filepath : " + filePath);
+			System.out.println("filepath : " + filePath);
+			System.out.println("filepath : " + filePath);
+			System.out.println("filepath : " + filePath);
+			System.out.println("filepath : " + filePath);
+			System.out.println("filepath : " + filePath);
 
-			// Return the URL or path
+			// Return the URL or path	
 			return "/uploads/" + fileName; // or filePath.toString() if you want the full path
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -246,7 +261,7 @@ public class EventController {
 	        return "edit-event";
 	    }
 
-	    // Create and update the event
+	    //  update the event
 	    try {
 	        Event event = this.eventService.getEventById(eventId);
 	        if (event == null) {
@@ -301,10 +316,184 @@ public class EventController {
 		
 	}
 	
-	/*
-	 * @GetMapping("/events") public String showAllEvents(Model model) { List<Event>
-	 * events = this.eventService.findAllEvents(); model.addAttribute("events",
-	 * events); return "all-events"; }
-	 */
+	@GetMapping("eventdetails/{eventId}")
+	public String eventDetails(@PathVariable("id") long userId,@PathVariable("eventId") long eventId,Model model) {
+		
+		Event event = this.eventService.getEventById(eventId);
+		
+		if(event != null) {
+			model.addAttribute("event", event);
+		}
+		
+		return "event-details";
+	}
+	
+	@PostMapping("/register/{eventId}")
+	public String RegisterEvent(@PathVariable("id") long userId, @PathVariable("eventId") long eventId, Model model) {
+	    boolean registrationByUserIdAndEventId = this.registrationService.checkRegistrationByUserIdAndEventId(userId, eventId);
+	    
+	    if (!registrationByUserIdAndEventId) {
+	        Event event = this.eventService.getEvent(eventId);
+	        User user = this.userRepo.getReferenceById(userId);
+	        
+	        if (user != null && event != null) {
+	            LocalDateTime dateTime = LocalDateTime.now();
+	            Registration registration = new Registration();
+	            
+	            registration.setEvent(event);
+	            registration.setUser(user);
+	            registration.setRegistrationDate(dateTime);
+	            registration.setStatus("pending");
+	            
+	            this.registrationService.doRegistration(registration);
+	            
+	            model.addAttribute("event", event); // Ensure event is added to the model
+	            model.addAttribute("message", "Your registration request has been sent. Please wait for the event's main reply.");
+	        } else {
+	            model.addAttribute("error", "Registration failed. User or event not found.");
+	        }
+	    } else {
+	        Event event = this.eventService.getEvent(eventId); // Fetch event again for the model
+	        model.addAttribute("event", event); // Ensure event is added to the model
+	        model.addAttribute("message", "You are already registered! Please wait for the event's main reply.");
+	    }
 
+	    return "event-details";
+	}
+	
+	@GetMapping("/eventregisterrequests")
+	public String eventRegisterRequests(@PathVariable("id") long userId, Model model) {
+		
+		List<Registration> registrations = this.registrationService.getRegistrationsForUserEvents(userId);
+		
+		if(registrations.isEmpty()) {
+			model.addAttribute("message", "no registration requests found");
+		}else if(registrations != null) {
+			model.addAttribute("registrations", registrations);
+		}
+		
+		return "events-register-request";
+	}
+	
+	@PostMapping("/confirm-registration/{registerId}")
+	public String confirmRegistration(@PathVariable("id") long userId, @PathVariable("registerId") long registerId, Model model) {
+	    Registration registration = this.registrationService.getRegistrationById(registerId);
+
+	    // Check if the registration is already confirmed
+	    if (registration.getStatus().equals("confirm")) {
+	        model.addAttribute("message", "Registration already confirmed!");
+	       
+	    } else {
+	        // Confirm  registration
+	        boolean confirmRegistration = this.registrationService.confirmRegistration(registration);
+	        
+	        if (confirmRegistration) {
+	            model.addAttribute("message", "Registration confirmed");
+	            
+	            String to = registration.getUser().getEmail();
+	            String subject = "registration confirmation";
+	            
+	            String emailBody = "<h1>Registration Confirmed</h1>"
+                        + "<h2>Dear " + registration.getUser().getName() + ",</h2>"
+                        + "<h2>Your registration for the event <strong>" + registration.getEvent().getName() + "</strong> has been confirmed.</h2>"
+                        + "<h2>Event Details:</h2>"
+                        + "<ul>"
+                        + "<li><h2>Date: " + registration.getEvent().getEventDate() + "</h2></li>"
+                        + "<li><h2>Time: " + registration.getEvent().getEventTime() + "</h2></li>"
+                        + "</ul>"
+                        + "<h3>Enojy the event by reach on time</h3>"
+                        + "<h3>Thank you for registering!</h3>";
+                        
+	            
+	           try {
+	        	   this.mailService.sendMail(to,subject,emailBody);
+			} catch (Exception e) {
+				model.addAttribute("error", e.getMessage());
+			}
+	            
+	            
+	            
+	        } else {
+	            model.addAttribute("message", "Registration not confirmed");
+	           
+	        }
+	    }
+
+	    
+	    List<Registration> registrations = this.registrationService.getRegistrationsForUserEvents(userId);
+	    
+	    if (registrations.isEmpty()) {
+	        model.addAttribute("message", "No registration requests found");
+	    } else {
+	        model.addAttribute("registrations", registrations);
+	    }
+
+	    return "events-register-request";
+	}
+
+	@PostMapping("/cancel-registration/{registerId}")
+	public String cancelRegistration(@PathVariable("id") long userId, @PathVariable("registerId") long registerId, Model model) {
+		
+		Registration registration = this.registrationService.getRegistrationById(registerId);
+		
+		if(registration.getStatus().equals("canceled")) {
+			model.addAttribute("message", "you already marked this request as \"canceled\" ");
+		}else {
+			boolean cancelRegistration = this.registrationService.cancelRegistration(registration);
+			
+			if(cancelRegistration) {
+				model.addAttribute("message", "registration marked as canceled");
+				
+				String to = registration.getUser().getEmail();
+	            String subject = "registration cancelled";
+	            
+	            String emailBody = "<h1>Registration Canceled</h1>"
+                        + "<h2>Dear " + registration.getUser().getName() + ",</h2>"
+                        + "<h2>Your registration entry for the event <strong>" + registration.getEvent().getName() + "</strong> has been cancelled by the event organisers.</h2>"
+                        + "<h2>Event Details:</h2>"
+                        + "<ul>"
+                        + "<li><h2>Date: " + registration.getEvent().getEventDate() + "</h2></li>"
+                        + "<li><h2>Time: " + registration.getEvent().getEventTime() + "</h2></li>"
+                        + "</ul>"
+                        + "<h2>Try to participate on other events</h2>"
+                        + "<h2>Thank you for registering!</h2>";
+                        
+	            
+	           try {
+	        	   this.mailService.sendMail(to,subject,emailBody);
+			} catch (Exception e) {
+				model.addAttribute("error", e.getMessage());
+			}
+				
+				
+				
+			}else {
+				model.addAttribute("message", "registration not canceled!!!, try after sometime");
+			}
+		}
+		
+		
+		
+		 List<Registration> registrations = this.registrationService.getRegistrationsForUserEvents(userId);
+		    
+		    if (registrations.isEmpty()) {
+		        model.addAttribute("message", "No registration requests found");
+		    } else {
+		        model.addAttribute("registrations", registrations);
+		    }
+
+		    return "events-register-request";
+		
+		
+	}
+	
+	
 }
+
+
+
+
+
+
+
+

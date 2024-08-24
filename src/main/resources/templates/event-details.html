@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Event Details</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:replace="fragments/user-header :: header"></div>
+    
+    
+    
+    
+    <div class="container mt-5">
+    <!-- Display error or success message -->
+        <div th:if="${error}" style="background: beige;color: red;" role="alert">
+            <p th:text="${error}"></p>
+        </div>
+                <div th:if="${message}" style="background: beige;color: red;" role="alert">
+            <p th:text="${message}"></p>
+        </div>
+        
+  
+<div th:if="${event == null}">
+    <p>No event details available.</p>
+</div>
+    
+    
+        <div class="card">
+            <div class="card-header">
+                <h1 th:text="${event.name}">Event Name</h1>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img th:src="@{${event.posterUrl}}" alt="Event Poster" class="img-fluid" >
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Date:</strong> <span th:text="${event.eventDate}">Event Date</span></p>
+                        <p><strong>Time:</strong> <span th:text="${event.eventTime}">Event Time</span></p>
+                        <p><strong>Description:</strong> <span th:text="${event.description}">Event Description</span></p>
+                        <p><strong>Location:</strong> <span th:text="${event.location}">Event Location</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-right">
+                <form th:action="@{/events/{userId}/register/{eventId}(userId=${user.id}, eventId=${event.id})}" method="post">
+                    <button type="submit" class="btn btn-primary">Register for Event</button>
+                </form>
+        
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

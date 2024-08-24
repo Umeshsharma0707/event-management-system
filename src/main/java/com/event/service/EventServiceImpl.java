@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.event.model.Event;
+import com.event.model.Registration;
 import com.event.repos.EventRepo;
 
 @Service
@@ -69,5 +70,7 @@ public class EventServiceImpl implements EventService{
 		List<Event> allEvents = this.eventRepo.findAll();
 		return allEvents;
 	}
+
+
 
 }

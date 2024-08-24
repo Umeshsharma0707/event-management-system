@@ -4,6 +4,7 @@ package com.event.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,12 +15,14 @@ import jakarta.persistence.ManyToOne;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id" )
     private Long id;
 
     private String name;
     private LocalDate eventDate;
     private LocalTime eventTime;
     private String posterUrl;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
     @ManyToOne
     private User user;

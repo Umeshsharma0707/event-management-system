@@ -3,6 +3,7 @@ package com.event.service;
 import java.util.List;
 
 import com.event.model.Event;
+import com.event.model.Registration;
 
 
 public interface EventService {
@@ -14,4 +15,6 @@ public interface EventService {
 	Event getEventById(long eventId);
 	boolean deleteEvent(Event event);
 	List<Event> findAllEvents();
+	
+	
 }

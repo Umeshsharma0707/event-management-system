@@ -21,6 +21,7 @@
 </div>
 
 
+
 <div class="container mt-5">
     <h1 class="text-center mb-4">All Events</h1>
     <div class="row">
@@ -35,8 +36,14 @@
                         <strong>Time:</strong> <span th:text="${event.eventTime}">Event Time</span><br>
                         <strong>Description:</strong> <span th:text="${event.description}">Event Description</span>
                     </p>
-                    <a th:href="@{/events/register/{eventId}(eventId=${event.id})}" class="btn btn-primary">Register</a>
-                    <a th:href="@{/events/register/{eventId}(eventId=${event.id})}" class="btn btn-primary">More Details</a>
+                     
+                    <div class="d-flex justify-content-between">
+                        <form th:action="@{/events/{userId}/register/{eventId}(userId=${user.id}, eventId=${event.id})}" method="post">
+                            <button type="submit" class="btn btn-primary">Register for Event</button>
+                        </form>
+            
+                        <a th:href="@{/events/{userId}/eventdetails/{eventId}(userId=${user.id}, eventId=${event.id})}" class="btn btn-secondary">More Details</a>
+                    </div>
                 </div>
             </div>
         </div>
