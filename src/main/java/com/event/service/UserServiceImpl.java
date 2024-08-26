@@ -27,4 +27,10 @@ public class UserServiceImpl implements UserService{
 		
 	}
 
+	@Override
+	public User getUserById(long userId) {
+		User user = this.userRepo.findById(userId).orElse(null);
+		return user;
+	}
+
 }

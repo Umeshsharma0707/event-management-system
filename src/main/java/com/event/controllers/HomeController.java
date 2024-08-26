@@ -1,5 +1,6 @@
 package com.event.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -36,11 +37,8 @@ public class HomeController {
 
 	@Autowired
 	private MailService mailService;
-
-	@GetMapping("/index")
-	public String index() {
-		return "index";
-	}
+	
+	int mainOtp;
 
 	@GetMapping("/login")
 	public String login(@RequestParam(value = "error", required = false) String error,
@@ -91,7 +89,7 @@ public class HomeController {
 	public String forgotPassword() {
 		return "forgot-password";
 	}
-
+	// LocalDateTime otpGenerateTimeCopy = null;
 	@PostMapping("/forgotPassword")
 	public String checkForgotEmail(@RequestParam("email") String email, Model model) {
 
@@ -103,7 +101,10 @@ public class HomeController {
 			Random random = new Random();
 
 			int otp = 100000 + random.nextInt(900000);
-
+			mainOtp = otp;
+			
+			//LocalDateTime otpGenerateTime = LocalDateTime.now();
+			//otpGenerateTimeCopy = otpGenerateTime;
 			String to = email;
 			String subject = "OTP for reset password";
 
@@ -133,8 +134,8 @@ public class HomeController {
 		return "otp-verification";
 	}
 
-	@GetMapping("/resendotp/{email}")
-	public String resendOtp(@PathVariable("email") String email, Model model) {
+	@PostMapping("/resendotp")
+	public String resendOtp(@RequestParam("email") String email, Model model) {
 		User user = this.userService.getUserByEmail(email);
 
 		if (user != null) {
@@ -143,7 +144,8 @@ public class HomeController {
 			Random random = new Random();
 
 			int otp = 100000 + random.nextInt(900000);
-
+			mainOtp = otp;
+			
 			String to = email;
 			String subject = "OTP for reset password";
 
@@ -166,5 +168,51 @@ public class HomeController {
 		}
 
 	}
-
+	
+	@PostMapping("/verify-otp")
+	public String verifyOtp(@RequestParam("userId") long userId, @RequestParam("otp") Integer userOtp,Model model) {
+			
+		
+		System.out.println("otp : " + userOtp);
+		System.out.println("mainotp : " + mainOtp);
+		
+		if(mainOtp == userOtp) {
+			model.addAttribute("userId", userId);
+			return "change-password";
+		}else {
+			System.out.println("otp : " + userOtp);
+			System.out.println("otp : " + mainOtp);
+			model.addAttribute("message","incorrect otp");
+			return "otp-verification";
+		}
+		
+	}
+	
+	@PostMapping("/update-password")
+	public String updatePassword(@RequestParam("userId") long userId , 
+														@RequestParam("newPassword") String newPassword,
+														@RequestParam("confirmPassword") String confirmPassword, Model model) {
+		
+		if(newPassword.equals(confirmPassword)) {
+			User user = this.userService.getUserById(userId);
+			
+			if(user!= null) {
+				user.setId(userId);
+				user.setPassword(passwordEncoder.encode(newPassword));
+				
+				this.userService.insertUser(user);
+				
+				model.addAttribute("message", "password changed");
+				return "login";
+			}else {
+				return "login";
+			}
+		}else {
+			model.addAttribute("message", "new password and confirm new password are not same");
+			return "change-password";
+		}
+		
+		
+	}
+	
 }

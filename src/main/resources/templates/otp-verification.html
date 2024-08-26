@@ -6,6 +6,13 @@
 <link
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 	rel="stylesheet">
+
+<style type="text/css">
+.disabled-link {
+	pointer-events: none;
+	opacity: 0.5;
+}
+</style>
 </head>
 <body>
 	<div class="container mt-5">
@@ -22,6 +29,9 @@
 					</div>
 					<div class="card-body">
 						<form th:action="@{/verify-otp}" method="post">
+
+							<input type="hidden" name="userId" th:value="${userId}">
+
 							<div class="form-group">
 								<label for="otp">Enter OTP</label> <input type="text"
 									class="form-control" id="otp" name="otp"
@@ -32,8 +42,17 @@
 						</form>
 					</div>
 					<div class="card-footer text-center">
-						<a class="btn btn-primary" th:href="@{/resendotp/{email}(email = ${email})}" >Resend</a>
+						<form th:action="@{/resendotp}" method="post">
+							<input type="hidden" name="email" th:value="${email}">
+							<button type="submit" id="resendOtpBtn"
+								class="btn btn-primary btn-block" disabled>Resend OTP</button>
+						</form>
+						<p class="reverseTimer" style="background: beige; color: red">resend
+							otp in : 40</p>
 					</div>
+
+
+
 
 					<div>
 						<a th:href="@{/index}">Home Page</a>
@@ -49,8 +68,32 @@
 		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- JavaScript for Countdown Timer and Redirection -->
 
+	<!-- JavaScript to enable the link after 40 seconds -->
+<script>
+    setTimeout(() => {
+        const resendOtpBtn = document.getElementById('resendOtpBtn');
+        resendOtpBtn.removeAttribute('disabled'); // Enable the button by removing 'disabled' attribute
+    }, 40000); // 40 seconds in milliseconds
+</script>
 
+	<script>
+        let reverseDiv = document.querySelector(".reverseTimer"); // Corrected selector
+        let seconds = 40;
+
+        let timeFun = () => {
+            seconds--;
+            reverseDiv.innerText = "resend otp in : " + seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(myVar); // Clear the interval when the timer reaches 0
+                reverseDiv.innerText = "Time's up!";
+            }
+        };
+
+        let myVar = setInterval(timeFun, 1000); // Start the interval
+    </script>
 
 
 

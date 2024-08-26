@@ -19,6 +19,12 @@
                     <div th:if="${regisetedMsg}" class="alert alert-success" role="alert">
                         <p th:text="${regisetedMsg}"></p>
                     </div>
+                    
+                     <!-- Success Message -->
+                    <div th:if="${message}" class="alert alert-success" role="alert">
+                        <p th:text="${message}"></p>
+                    </div>
+                    
 
                     <!-- Error Message -->
                     <div th:if="${errorMsg}" class="alert alert-danger" role="alert">
