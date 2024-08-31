@@ -24,7 +24,7 @@
 
     <form th:action="@{/events/{userId}/update/{eventId}(userId=${user.id}, eventId=${event.id})}" method="post" enctype="multipart/form-data">
     
-    	 <input type="text" class="form-control" id="userId" name="eventId" th:value="${event.id}">
+    	 <input type="hidden" class="form-control" id="userId" name="eventId" th:value="${event.id}">
     
         <div class="form-group">
             <label for="name">Event Name</label>

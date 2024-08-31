@@ -12,4 +12,5 @@ public interface RegistrationService {
 	boolean confirmRegistration(Registration registration);
 	Registration getRegistrationById(long registerId);
 	boolean cancelRegistration(Registration registration);
+	boolean hasRegistrationByEventId(long eventId);
 }

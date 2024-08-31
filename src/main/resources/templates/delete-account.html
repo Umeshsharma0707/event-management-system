@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Page</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="/fragments/user-header :: header"></div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card" >
+                    <div class="card-header"  style="background: red; color: white">
+                        <h4 class="card-title">Delete Account</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/user/delete-user}" method="post">
+                        
+                        	<input type="hidden" name="id" th:value="${user.id}">
+                        
+                            <div class="form-group">
+                            
+                                <label for="name">To delete your account write "<span style="color: white; background: red" th:text="${user.email}"></span>" in the below box </label>
+                                <input type="text" id="email" name="email" class="form-control" placeholder="write here" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary bg-dark" >Delete My Account</button>
+                            
+                            <div style="background: beige; color: red; font-size: 16px;" th:if="${message}">
+                           		<p th:text="${message}"></p> 
+                           </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -36,12 +36,14 @@ import com.event.service.RegistrationService;
 import com.event.service.UserPrincipals;
 import com.event.service.UserService;
 
+import jakarta.transaction.Transactional;
+
 @Controller
 @RequestMapping("/events/{id}")
 public class EventController {
 
 	private String uploadDir = Paths.get("src", "main", "resources", "static", "uploads").toAbsolutePath().toString();
-
+	private String defautImg = Paths.get("src", "main", "resources", "static", "uploads","default-img.jpg").toAbsolutePath().toString();
 	@Autowired
 	private UserRepo userRepo;
 
@@ -173,13 +175,13 @@ public class EventController {
 		}
 
 		try {
-			// Create the upload directory if it does not exist
+			
 			File uploadDirFile = new File(uploadDir);
 			if (!uploadDirFile.exists()) {
 				uploadDirFile.mkdirs();
 			}
 
-			// Save the file
+			// Save file
 			String fileName = file.getOriginalFilename();
 			File filePath = new File(uploadDirFile, fileName);
 			file.transferTo(filePath);
@@ -192,8 +194,8 @@ public class EventController {
 			System.out.println("filepath : " + filePath);
 			System.out.println("filepath : " + filePath);
 
-			// Return the URL or path	
-			return "/uploads/" + fileName; // or filePath.toString() if you want the full path
+				
+			return "/uploads/" + fileName; 
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -228,6 +230,9 @@ public class EventController {
 	        @RequestParam("poster") MultipartFile poster,
 	        Model model) {
 
+		
+		Event event = this.eventService.getEventById(eventId);
+		
 	    LocalDate date;
 	    LocalTime time;
 	    try {
@@ -263,7 +268,7 @@ public class EventController {
 
 	    //  update the event
 	    try {
-	        Event event = this.eventService.getEventById(eventId);
+	        
 	        if (event == null) {
 	            model.addAttribute("error", "Event not found.");
 	            return "edit-event";
@@ -297,20 +302,29 @@ public class EventController {
 	}
 	
 	@GetMapping("/deleteEvent/{eventId}")
+
 	public String deleteEvent(@PathVariable("id") long userId,@PathVariable("eventId") long eventId,Model model) {
 		
 		Event event = this.eventService.getEventById(eventId);
 		
-		boolean deleteEvent = this.eventService.deleteEvent(event);
 		
-		if(deleteEvent) {
-			String msg =  event.getName() + " , event is deleted";
-			model.addAttribute("message", msg);
-			List<Event> userAllEvents = this.eventService.userAllEvents(userId);
-	        model.addAttribute("events", userAllEvents);
-		}else {
-			model.addAttribute("message", "event not deleted");
-		}
+		boolean hasRegistrationByEventId = this.registrationService.hasRegistrationByEventId(eventId);
+			
+			if(hasRegistrationByEventId == true) {
+				model.addAttribute("message", "cannot delete this event, because many users registered this event");
+				return "user-events";
+			}
+		
+			boolean deleteEvent = this.eventService.deleteEvent(event);
+			if(deleteEvent) {
+				String msg =  event.getName() + " , event is deleted";
+				model.addAttribute("message", msg);
+				List<Event> userAllEvents = this.eventService.userAllEvents(userId);
+		        model.addAttribute("events", userAllEvents);
+			}else {
+				model.addAttribute("message", "event not deleted");
+			}
+		
 		
 		return "user-events";
 		

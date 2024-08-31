@@ -52,6 +52,11 @@ public class HomeController {
 		return "login";
 	}
 
+	@GetMapping("/index")
+	public String getHomePage() {
+		return "index";
+	}
+	
 	@GetMapping("/userHome")
 	public String userHome(@AuthenticationPrincipal UserPrincipals userPrincipal, Model model) {
 		User user = userPrincipal.getFullUser();
@@ -63,7 +68,9 @@ public class HomeController {
 		List<Event> allEvents = this.eventService.findAllEvents();
 
 		for (Event event : allEvents) {
-			event.setDescription(event.getDescription().substring(0, 150) + "...");
+			if(event.getDescription().length() > 150) {
+				event.setDescription(event.getDescription().substring(0, 150) + "...");
+			}
 		}
 
 		model.addAttribute("events", allEvents);

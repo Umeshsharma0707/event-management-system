@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+<div th:replace="/fragments/user-header :: header" ></div>
+
+<div class="container mt-5">
+    <h2>User Details
+    
+    <span style="margin-left: 5px;  background: beige; color: red; border: 1px solid almond; font-size: 16px;" th:if="${message}">
+    	<span th:text="${message}"></span>
+    </span>
+    
+    </h2>
+
+    <form th:action="@{/user/update}" method="post">
+    
+    	<!-- user id -->
+    		<input type="hidden" name="id" th:value="${user.id}">
+    	<!-- user id -->
+    
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name"  name="name" th:value="${user.name}"  placeholder="enter your name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" th:value="${user.email}"  placeholder="enter your email" disabled="disabled">
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone:</label>
+            <input type="text" class="form-control" id="phone" name="phone" th:value="${user.phone}" placeholder="enter your phone" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="city">city:</label>
+            <input type="text" class="form-control" id="city" name="city" th:value="${user.city}" placeholder="enter your city" required>
+        </div>
+        
+      
+
+        <!-- Add more fields as necessary -->
+
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+
+    <!-- Display success message -->
+    <div th:if="${message}" class="alert alert-success mt-3" role="alert">
+        <p th:text="${message}"></p>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

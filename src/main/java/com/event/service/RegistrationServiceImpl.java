@@ -78,6 +78,17 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 	}
 
+	@Override
+	public boolean hasRegistrationByEventId(long eventId) {
+		List<Registration> byEventId = this.registrationRepo.findByEventId(eventId);
+		
+		if(byEventId.isEmpty()) {
+			return false;
+		}
+		
+		return true;
+	}
+
 	
 
 }

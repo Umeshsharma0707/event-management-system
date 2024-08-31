@@ -27,6 +27,8 @@ public class User {
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Event> events;
 	
+
+	
 	public long getId() {
 		return id;
 	}

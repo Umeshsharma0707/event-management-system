@@ -3,13 +3,17 @@ package com.event.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Event {
@@ -28,6 +32,9 @@ public class Event {
     private User user;
     
     private String location;
+    
+    @OneToMany()
+    private List<Registration> registrations;
     // Getters and setters
 
     public Long getId() {

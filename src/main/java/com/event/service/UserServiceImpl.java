@@ -33,4 +33,16 @@ public class UserServiceImpl implements UserService{
 		return user;
 	}
 
+	@Override
+	public User updateUser(User user) {
+		User user2 = this.userRepo.save(user);
+		return user2;
+	}
+
+	@Override
+	public boolean deleteUser(User user) {
+		this.userRepo.delete(user);
+		return true;
+	}
+
 }

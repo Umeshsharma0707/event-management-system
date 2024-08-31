@@ -10,6 +10,8 @@ import com.event.model.Event;
 import com.event.model.Registration;
 import com.event.repos.EventRepo;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class EventServiceImpl implements EventService{
 	
@@ -60,6 +62,7 @@ public class EventServiceImpl implements EventService{
 	}
 
 	@Override
+	
 	public boolean deleteEvent(Event event) {
 		this.eventRepo.delete(event);
 		return true;

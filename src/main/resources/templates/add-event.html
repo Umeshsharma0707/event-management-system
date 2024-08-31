@@ -23,7 +23,7 @@
 
     <form th:action="@{/events/{userId}/add(userId=${user.id})}" method="post" enctype="multipart/form-data">
     
-    	 <input type="text" class="form-control" id="userId" name="userId" th:value="${user.id}">
+    	 <input type="hidden" class="form-control" id="userId" name="userId" th:value="${user.id}">
     
         <div class="form-group">
             <label for="name">Event Name</label>

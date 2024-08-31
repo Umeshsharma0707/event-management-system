@@ -44,13 +44,13 @@
 						aria-expanded="false" th:text="${user.name}"> profile</a>
 						<div class="dropdown-menu" aria-labelledby="eventsDropdown">
 							<a class="dropdown-item"
-								th:href="@{/events/{id}/addevent(id=${user.id})}">update profile
+								th:href="@{/user/{userId}(userId = ${user.id})}">update profile
 								</a>
 								 <a class="dropdown-item" th:href="@{/events/{userId}/eventregisterrequests(userId= ${user.id})}">
 								your confirmed events</a>
 								 <a class="dropdown-item"
-								th:href="@{/events/{id}/userEvents(id=${user.id})}">My
-								delete account</a>
+								th:href="@{/user/deleteaccount}" style="background-color: red; color: white">
+								delete my account</a>
 						</div></li>
 						
 					
