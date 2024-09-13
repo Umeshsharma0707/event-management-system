@@ -1,5 +1,6 @@
 package com.event.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,6 +152,33 @@ public class UserController {
 	    }
 	}
 
+	@GetMapping("/{userId}/confirmed-events")
+	public String getAllConfirmedEvents(@PathVariable("userId") long userId, Model model) {
+		
+		List<Registration> allConfirmedStatus = this.userService.getAllConfirmedStatus("confirm", userId);
+		
+		System.out.println(allConfirmedStatus);
+		
+		List<Event> events = new ArrayList<Event>();
+		if(allConfirmedStatus != null) {
+			
+			for(Registration registration : allConfirmedStatus) {
+					Event eventById = registration.getEvent();
+					if(eventById != null) {
+						events.add(eventById);
+					}
+			}
+			
+			
+			model.addAttribute("events",events);
+			System.out.println(allConfirmedStatus);	
+		}else {
+			model.addAttribute("message", "not confirmed events found");
+			
+		}
+		
+		return "ongoing-user-events";
+	}
 	
 	/* end of user controller */
 }

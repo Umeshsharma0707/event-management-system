@@ -15,7 +15,6 @@ public class MailService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
-	
 	public void sendMail(String to, String subject, String body) {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		
@@ -35,5 +34,4 @@ public class MailService {
 		}
 	}
 	
-
 }

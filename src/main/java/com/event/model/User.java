@@ -24,10 +24,12 @@ public class User {
 	private String city;
 	private String password;
 	
+	
+	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Event> events;
-	
-
+	@OneToMany(mappedBy = "user")
+	private List<Registration> registration;
 	
 	public long getId() {
 		return id;
@@ -71,10 +73,20 @@ public class User {
 	public void setEvents(List<Event> events) {
 		this.events = events;
 	}
+	
+	
+	
+	
+	public List<Registration> getRegistration() {
+		return registration;
+	}
+	public void setRegistration(List<Registration> registration) {
+		this.registration = registration;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", email=" + email + ", phone=" + phone + ", city=" + city
-				+ ", password=" + password + ", events=" + events + "]";
+				+ ", password=" + password + "]";
 	}
 	
 	

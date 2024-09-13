@@ -1,9 +1,13 @@
 package com.event.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.event.model.Registration;
 import com.event.model.User;
+import com.event.repos.RegistrationRepo;
 import com.event.repos.UserRepo;
 
 @Service
@@ -11,6 +15,9 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	private RegistrationRepo registrationRepo;
 	
 	@Override
 	public User insertUser(User user) {
@@ -43,6 +50,13 @@ public class UserServiceImpl implements UserService{
 	public boolean deleteUser(User user) {
 		this.userRepo.delete(user);
 		return true;
+	}
+
+	@Override
+	public List<Registration> getAllConfirmedStatus(String status, long userId) {
+		List<Registration> byStatusAndUserId = this.registrationRepo.findByStatusAndUserId(status, userId);
+		System.out.println(byStatusAndUserId);
+		return byStatusAndUserId;
 	}
 
 }
